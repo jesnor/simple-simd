@@ -33,6 +33,15 @@ impl f64x4 {
     pub fn permute_var(self, idx: i32x8) -> Self { unsafe { _mm256_permutevar_pd(self.v, idx.into()) }.into() }
 
     #[inline]
+    pub fn from_slice(a: &[f64]) -> Self {
+        if a.len() < 4 {
+            panic!("Slice too small!")
+        }
+
+        unsafe { Self::from_slice_unchecked(a) }
+    }
+
+    #[inline]
     pub unsafe fn from_slice_unchecked(a: &[f64]) -> Self { Self::from_ptr(a.as_ptr()) }
 
     #[inline]
@@ -47,6 +56,15 @@ impl f64x4 {
     #[inline]
     pub fn blend<const IMM: i32>(self, other: Self) -> Self {
         unsafe { _mm256_blend_pd::<IMM>(self.v, other.v) }.into()
+    }
+
+    #[inline]
+    pub fn store(self, a: &mut [f64]) {
+        if a.len() < 4 {
+            panic!("Slice too small!")
+        }
+
+        unsafe { self.store_unchecked(a) }
     }
 
     #[inline]
