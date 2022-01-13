@@ -1,13 +1,9 @@
 #[cfg(target_arch = "x86")]
-use std::arch::x86::{__m256, _mm256_add_ps, _mm256_mul_ps, _mm256_permute_ps, _mm256_set1_ps};
+use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
-use std::arch::x86_64::{
-    __m256d, _mm256_add_pd, _mm256_blend_pd, _mm256_castpd_ps, _mm256_castpd_si256, _mm256_hadd_pd, _mm256_loadu_pd,
-    _mm256_mul_pd, _mm256_permute4x64_pd, _mm256_permute_pd, _mm256_permutevar_pd, _mm256_set1_pd, _mm256_set_pd,
-    _mm256_storeu_pd,
-};
+use std::arch::x86_64::*;
 
-use crate::{simd_f32::f32x8, simd_i32::i32x8};
+use crate::{f32x8, i32x8};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
 
 #[allow(non_camel_case_types)]
