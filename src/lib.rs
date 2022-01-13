@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_arguments, clippy::from_over_into, clippy::ptr_offset_with_cast)]
+
 mod simd_f32;
 mod simd_f64;
 mod simd_i32;
