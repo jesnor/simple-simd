@@ -35,9 +35,9 @@ impl From<__m256i> for i32x8 {
     fn from(v: __m256i) -> Self { Self { v } }
 }
 
-impl Into<__m256i> for i32x8 {
+impl From<i32x8> for __m256i {
     #[inline]
-    fn into(self) -> __m256i { self.v }
+    fn from(v: i32x8) -> Self { v.v }
 }
 
 impl Mul<i32x8> for i32x8 {

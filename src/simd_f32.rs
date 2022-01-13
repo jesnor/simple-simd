@@ -33,7 +33,7 @@ impl f32x8 {
     pub fn permute_var(self, idx: i32x8) -> Self { unsafe { _mm256_permutevar8x32_ps(self.v, idx.into()) }.into() }
 
     #[inline]
-    pub fn from_slice(a: &[f32]) -> Self { unsafe { Self::from_ptr(a.as_ptr()) } }
+    pub unsafe fn from_slice_unchecked(a: &[f32]) -> Self { Self::from_ptr(a.as_ptr()) }
 
     #[inline]
     pub unsafe fn from_ptr(a: *const f32) -> Self { _mm256_loadu_ps(a).into() }
@@ -55,7 +55,7 @@ impl f32x8 {
     }
 
     #[inline]
-    pub fn store(self, a: &mut [f32]) { unsafe { self.store_ptr(a.as_mut_ptr()) } }
+    pub unsafe fn store_unchecked(self, a: &mut [f32]) { self.store_ptr(a.as_mut_ptr()) }
 
     #[inline]
     pub unsafe fn store_ptr(self, a: *mut f32) { _mm256_storeu_ps(a, self.v) }
@@ -72,9 +72,9 @@ impl From<__m256> for f32x8 {
     fn from(v: __m256) -> Self { Self { v } }
 }
 
-impl Into<__m256> for f32x8 {
+impl From<f32x8> for __m256 {
     #[inline]
-    fn into(self) -> __m256 { self.v }
+    fn from(v: f32x8) -> Self { v.v }
 }
 
 impl Mul<f32x8> for f32x8 {
