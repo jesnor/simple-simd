@@ -4,7 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use crate::f32x8;
-use std::ops::{Add, AddAssign, Mul, MulAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
@@ -28,6 +28,9 @@ impl i32x8 {
 
     #[inline]
     pub fn to_raw_f32(self) -> f32x8 { unsafe { _mm256_castsi256_ps(self.v) }.into() }
+
+    #[inline]
+    pub fn to_f32(self) -> f32x8 { unsafe { _mm256_cvtepi32_ps(self.v) }.into() }
 }
 
 impl From<__m256i> for i32x8 {
@@ -62,4 +65,16 @@ impl Add<i32x8> for i32x8 {
 impl AddAssign for i32x8 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) { self.v = (*self + rhs).v }
+}
+
+impl Sub<i32x8> for i32x8 {
+    type Output = i32x8;
+
+    #[inline]
+    fn sub(self, rhs: i32x8) -> Self::Output { unsafe { _mm256_sub_epi32(self.v, rhs.v) }.into() }
+}
+
+impl SubAssign for i32x8 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
 }

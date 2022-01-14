@@ -4,7 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use crate::{f32x8, i32x8};
-use std::ops::{Add, AddAssign, Mul, MulAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
@@ -109,4 +109,16 @@ impl Add<f64x4> for f64x4 {
 impl AddAssign for f64x4 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) { self.v = (*self + rhs).v }
+}
+
+impl Sub<f64x4> for f64x4 {
+    type Output = f64x4;
+
+    #[inline]
+    fn sub(self, rhs: f64x4) -> Self::Output { unsafe { _mm256_sub_pd(self.v, rhs.v) }.into() }
+}
+
+impl SubAssign for f64x4 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
 }

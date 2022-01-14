@@ -4,7 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use crate::{f64x4, i32x8};
-use std::ops::{Add, AddAssign, Mul, MulAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
@@ -48,12 +48,23 @@ impl f32x8 {
     pub unsafe fn from_ptr(a: *const f32) -> Self { _mm256_loadu_ps(a).into() }
 
     #[inline]
-    pub unsafe fn gather<const SCALE: i32>(a: *const f32, idx: i32x8) -> Self {
+    pub unsafe fn gather_ptr<const SCALE: i32>(a: *const f32, idx: i32x8) -> Self {
         _mm256_i32gather_ps::<SCALE>(a, idx.into()).into()
     }
 
     #[inline]
+    pub unsafe fn gather_unchecked<const SCALE: i32>(a: &[f32], idx: i32x8) -> Self {
+        Self::gather_ptr::<SCALE>(a.as_ptr(), idx)
+    }
+
+    #[inline]
     pub fn to_raw_i32(self) -> i32x8 { unsafe { _mm256_castps_si256(self.v) }.into() }
+
+    #[inline]
+    pub fn trunc(self) -> i32x8 { unsafe { _mm256_cvttps_epi32(self.v) }.into() }
+
+    #[inline]
+    pub fn floor(self) -> f32x8 { unsafe { _mm256_floor_ps(self.v) }.into() }
 
     #[inline]
     pub fn to_raw_f64(self) -> f64x4 { unsafe { _mm256_castps_pd(self.v) }.into() }
@@ -117,4 +128,16 @@ impl Add<f32x8> for f32x8 {
 impl AddAssign for f32x8 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) { self.v = (*self + rhs).v }
+}
+
+impl Sub<f32x8> for f32x8 {
+    type Output = f32x8;
+
+    #[inline]
+    fn sub(self, rhs: f32x8) -> Self::Output { unsafe { _mm256_sub_ps(self.v, rhs.v) }.into() }
+}
+
+impl SubAssign for f32x8 {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
 }
