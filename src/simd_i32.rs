@@ -24,6 +24,21 @@ impl i32x8 {
     pub fn splat(v: i32) -> i32x8 { unsafe { _mm256_set1_epi32(v) }.into() }
 
     #[inline]
+    pub fn from_slice(a: &[i32]) -> Self {
+        if a.len() < 8 {
+            panic!("Slice too small!")
+        }
+
+        unsafe { Self::from_slice_unchecked(a) }
+    }
+
+    #[inline]
+    pub unsafe fn from_slice_unchecked(a: &[i32]) -> Self { Self::from_ptr(a.as_ptr()) }
+
+    #[inline]
+    pub unsafe fn from_ptr(a: *const i32) -> Self { _mm256_loadu_si256(a as *const __m256i).into() }
+
+    #[inline]
     pub fn blend<const IMM: i32>(self, other: Self) -> Self {
         unsafe { _mm256_blend_epi32::<IMM>(self.v, other.v) }.into()
     }
@@ -58,7 +73,7 @@ impl Mul<i32x8> for i32x8 {
     type Output = i32x8;
 
     #[inline]
-    fn mul(self, rhs: i32x8) -> Self::Output { unsafe { _mm256_mul_epi32(self.v, rhs.v) }.into() }
+    fn mul(self, rhs: i32x8) -> Self::Output { unsafe { _mm256_mullo_epi32(self.v, rhs.v) }.into() }
 }
 
 impl MulAssign<i32x8> for i32x8 {
@@ -125,7 +140,7 @@ impl Mul<i32x4> for i32x4 {
     type Output = i32x4;
 
     #[inline]
-    fn mul(self, rhs: i32x4) -> Self::Output { unsafe { _mm_mul_epi32(self.v, rhs.v) }.into() }
+    fn mul(self, rhs: i32x4) -> Self::Output { unsafe { _mm_mullo_epi32(self.v, rhs.v) }.into() }
 }
 
 impl MulAssign<i32x4> for i32x4 {

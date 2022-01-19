@@ -94,6 +94,20 @@ impl f32x8 {
 
     #[inline]
     pub fn mul_add(self, mul: Self, add: Self) -> Self { unsafe { _mm256_fmadd_ps(self.v, mul.v, add.v) }.into() }
+
+    #[inline]
+    pub fn sum(self) -> f32 {
+        unsafe {
+            let hi = _mm256_extractf128_ps::<1>(self.v); // (4, 5, 6, 7)
+            let lo = _mm256_castps256_ps128(self.v); // (1, 2, 3, 4)
+            let sum = _mm_add_ps(lo, hi); // (1 + 4, 2 + 5, 3 + 6, 4 + 7)
+            let hid = _mm_movehl_ps(sum, sum); // (3 + 6, 4 + 7, -, -)
+            let sum2 = _mm_add_ps(sum, hid); // (1 + 4 + 3 + 6, 2 + 5 + 4 + 7, -, -)
+            let hi = _mm_shuffle_ps::<1>(sum2, sum2); // (2 + 5 + 4 + 7, -, -, -)
+            let sum = _mm_add_ss(sum2, hi); // (1 + 2 + 3 + 4 + 5 + 6 + 7, -, -, -)
+            _mm_cvtss_f32(sum)
+        }
+    }
 }
 
 impl From<__m256> for f32x8 {
