@@ -3,7 +3,7 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use crate::f32x8;
+use crate::{f32x8, i16x16};
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
@@ -27,6 +27,9 @@ impl i64x4 {
     pub fn set<const IDX: i32>(self, v: i64) -> Self { unsafe { _mm256_insert_epi64::<IDX>(self.v, v) }.into() }
 
     #[inline]
+    pub fn permute<const IMM: i32>(self) -> Self { unsafe { _mm256_permute4x64_epi64::<IMM>(self.v) }.into() }
+
+    #[inline]
     pub unsafe fn gather_ptr<const SCALE: i32>(a: *const i64, idx: i64x4) -> Self {
         _mm256_i64gather_epi64::<SCALE>(a, idx.into()).into()
     }
@@ -37,7 +40,25 @@ impl i64x4 {
     }
 
     #[inline]
+    pub fn to_raw_i16(self) -> i16x16 { self.v.into() }
+
+    #[inline]
     pub fn to_raw_f32(self) -> f32x8 { unsafe { _mm256_castsi256_ps(self.v) }.into() }
+
+    #[inline]
+    pub fn store(self, a: &mut [i64]) {
+        if a.len() < 4 {
+            panic!("Slice too small!")
+        }
+
+        unsafe { self.store_unchecked(a) }
+    }
+
+    #[inline]
+    pub unsafe fn store_unchecked(self, a: &mut [i64]) { self.store_ptr(a.as_mut_ptr()) }
+
+    #[inline]
+    pub unsafe fn store_ptr(self, a: *mut i64) { _mm256_storeu_si256(a as *mut __m256i, self.v) }
 }
 
 impl From<__m256i> for i64x4 {
