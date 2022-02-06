@@ -2,6 +2,12 @@
 name = "simple-simd"
 version = "0.7.0"
 edition = "2021"
+readme = "README.md"
+
+repository = "https://github.com/jesnor/simple-simd"
+
+license = "MIT OR Apache-2.0"
+keywords = ["simd", "avx2"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
