@@ -3,7 +3,7 @@ use std::arch::x86::*;
 #[cfg(target_arch = "x86_64")]
 use std::arch::x86_64::*;
 
-use crate::{f32x8, i32x8};
+use crate::{f32x8, i32x8, i64x4};
 use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
@@ -51,6 +51,9 @@ impl f64x4 {
     pub fn to_raw_i32(self) -> i32x8 { unsafe { _mm256_castpd_si256(self.v) }.into() }
 
     #[inline]
+    pub fn to_raw_i64(self) -> i64x4 { unsafe { _mm256_castpd_si256(self.v) }.into() }
+
+    #[inline]
     pub fn to_raw_f32(self) -> f32x8 { unsafe { _mm256_castpd_ps(self.v) }.into() }
 
     #[inline]
@@ -75,6 +78,9 @@ impl f64x4 {
 
     #[inline]
     pub fn hadd(self, other: Self) -> Self { unsafe { _mm256_hadd_pd(self.v, other.v) }.into() }
+
+    #[inline]
+    pub fn extract<const INDEX: i32>(self) -> f64 { f64::from_bits(self.to_raw_i64().extract::<INDEX>() as u64) }
 }
 
 impl From<__m256d> for f64x4 {

@@ -108,6 +108,9 @@ impl f32x8 {
             _mm_cvtss_f32(sum)
         }
     }
+
+    #[inline]
+    pub fn extract<const INDEX: i32>(self) -> f32 { f32::from_bits(self.to_raw_i32().extract::<INDEX>() as u32) }
 }
 
 impl From<__m256> for f32x8 {
