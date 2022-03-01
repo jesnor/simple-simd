@@ -4,7 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use crate::{i32x8, i64x4};
-use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
@@ -132,6 +132,30 @@ impl Sub<i16x16> for i16x16 {
 impl SubAssign for i16x16 {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
+}
+
+impl BitAnd<i16x16> for i16x16 {
+    type Output = i16x16;
+
+    #[inline]
+    fn bitand(self, rhs: i16x16) -> Self::Output { unsafe { _mm256_and_si256(self.v, rhs.v) }.into() }
+}
+
+impl BitAndAssign for i16x16 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: Self) { self.v = (*self & rhs).v }
+}
+
+impl BitOr<i16x16> for i16x16 {
+    type Output = i16x16;
+
+    #[inline]
+    fn bitor(self, rhs: i16x16) -> Self::Output { unsafe { _mm256_or_si256(self.v, rhs.v) }.into() }
+}
+
+impl BitOrAssign for i16x16 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: Self) { self.v = (*self | rhs).v }
 }
 
 #[allow(non_camel_case_types)]

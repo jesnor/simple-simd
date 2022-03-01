@@ -4,7 +4,7 @@ use std::arch::x86::*;
 use std::arch::x86_64::*;
 
 use crate::{f32x8, i16x16};
-use std::ops::{Add, AddAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, Sub, SubAssign};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
@@ -93,4 +93,28 @@ impl Sub<i64x4> for i64x4 {
 impl SubAssign for i64x4 {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
+}
+
+impl BitAnd<i64x4> for i64x4 {
+    type Output = i64x4;
+
+    #[inline]
+    fn bitand(self, rhs: i64x4) -> Self::Output { unsafe { _mm256_and_si256(self.v, rhs.v) }.into() }
+}
+
+impl BitAndAssign for i64x4 {
+    #[inline]
+    fn bitand_assign(&mut self, rhs: Self) { self.v = (*self & rhs).v }
+}
+
+impl BitOr<i64x4> for i64x4 {
+    type Output = i64x4;
+
+    #[inline]
+    fn bitor(self, rhs: i64x4) -> Self::Output { unsafe { _mm256_or_si256(self.v, rhs.v) }.into() }
+}
+
+impl BitOrAssign for i64x4 {
+    #[inline]
+    fn bitor_assign(&mut self, rhs: Self) { self.v = (*self | rhs).v }
 }
