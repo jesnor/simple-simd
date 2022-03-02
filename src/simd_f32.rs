@@ -33,6 +33,12 @@ impl f32x8 {
     pub fn permute_var(self, idx: i32x8) -> Self { unsafe { _mm256_permutevar8x32_ps(self.v, idx.into()) }.into() }
 
     #[inline]
+    pub fn unpacklo(self, b: f32x8) -> Self { unsafe { _mm256_unpacklo_ps(self.v, b.v) }.into() }
+
+    #[inline]
+    pub fn unpackhi(self, b: f32x8) -> Self { unsafe { _mm256_unpackhi_ps(self.v, b.v) }.into() }
+
+    #[inline]
     pub fn from_slice(a: &[f32]) -> Self {
         if a.len() < 8 {
             panic!("Slice too small!")
@@ -88,6 +94,9 @@ impl f32x8 {
 
     #[inline]
     pub unsafe fn store_ptr(self, a: *mut f32) { _mm256_storeu_ps(a, self.v) }
+
+    #[inline]
+    pub unsafe fn storeu2_ptr(self, hi: *mut f32, lo: *mut f32) { _mm256_storeu2_m128(hi, lo, self.v) }
 
     #[inline]
     pub fn hadd(self, other: Self) -> Self { unsafe { _mm256_hadd_ps(self.v, other.v) }.into() }
