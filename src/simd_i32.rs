@@ -39,6 +39,16 @@ impl i32x8 {
     pub unsafe fn from_ptr(a: *const i32) -> Self { _mm256_loadu_si256(a as *const __m256i).into() }
 
     #[inline]
+    pub unsafe fn gather_ptr<const SCALE: i32>(a: *const i32, idx: i32x8) -> Self {
+        _mm256_i32gather_epi32::<SCALE>(a, idx.into()).into()
+    }
+
+    #[inline]
+    pub unsafe fn gather_unchecked<const SCALE: i32>(a: &[i32], idx: i32x8) -> Self {
+        Self::gather_ptr::<SCALE>(a.as_ptr(), idx)
+    }
+
+    #[inline]
     pub fn blend<const IMM: i32>(self, other: Self) -> Self {
         unsafe { _mm256_blend_epi32::<IMM>(self.v, other.v) }.into()
     }

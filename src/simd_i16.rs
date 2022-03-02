@@ -160,11 +160,11 @@ impl BitOrAssign for i16x16 {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Copy, Clone)]
-pub struct i16x4 {
+pub struct i16x8 {
     v: __m128i,
 }
 
-impl i16x4 {
+impl i16x8 {
     #[inline]
     pub fn new(v1: i16, v2: i16, v3: i16, v4: i16, v5: i16, v6: i16, v7: i16, v8: i16) -> Self {
         Self {
@@ -179,48 +179,48 @@ impl i16x4 {
     pub fn set<const IDX: i32>(self, v: i16) -> Self { unsafe { _mm_insert_epi16::<IDX>(self.v, v as i32) }.into() }
 }
 
-impl From<__m128i> for i16x4 {
+impl From<__m128i> for i16x8 {
     #[inline]
     fn from(v: __m128i) -> Self { Self { v } }
 }
 
-impl From<i16x4> for __m128i {
+impl From<i16x8> for __m128i {
     #[inline]
-    fn from(v: i16x4) -> Self { v.v }
+    fn from(v: i16x8) -> Self { v.v }
 }
 
-impl Mul<i16x4> for i16x4 {
-    type Output = i16x4;
+impl Mul<i16x8> for i16x8 {
+    type Output = i16x8;
 
     #[inline]
-    fn mul(self, rhs: i16x4) -> Self::Output { unsafe { _mm_mullo_epi16(self.v, rhs.v) }.into() }
+    fn mul(self, rhs: i16x8) -> Self::Output { unsafe { _mm_mullo_epi16(self.v, rhs.v) }.into() }
 }
 
-impl MulAssign<i16x4> for i16x4 {
+impl MulAssign<i16x8> for i16x8 {
     #[inline]
-    fn mul_assign(&mut self, rhs: i16x4) { self.v = (*self * rhs).v }
+    fn mul_assign(&mut self, rhs: i16x8) { self.v = (*self * rhs).v }
 }
 
-impl Add<i16x4> for i16x4 {
-    type Output = i16x4;
+impl Add<i16x8> for i16x8 {
+    type Output = i16x8;
 
     #[inline]
-    fn add(self, rhs: i16x4) -> Self::Output { unsafe { _mm_add_epi16(self.v, rhs.v) }.into() }
+    fn add(self, rhs: i16x8) -> Self::Output { unsafe { _mm_add_epi16(self.v, rhs.v) }.into() }
 }
 
-impl AddAssign for i16x4 {
+impl AddAssign for i16x8 {
     #[inline]
     fn add_assign(&mut self, rhs: Self) { self.v = (*self + rhs).v }
 }
 
-impl Sub<i16x4> for i16x4 {
-    type Output = i16x4;
+impl Sub<i16x8> for i16x8 {
+    type Output = i16x8;
 
     #[inline]
-    fn sub(self, rhs: i16x4) -> Self::Output { unsafe { _mm_sub_epi16(self.v, rhs.v) }.into() }
+    fn sub(self, rhs: i16x8) -> Self::Output { unsafe { _mm_sub_epi16(self.v, rhs.v) }.into() }
 }
 
-impl SubAssign for i16x4 {
+impl SubAssign for i16x8 {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) { self.v = (*self - rhs).v }
 }
