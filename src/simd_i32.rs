@@ -90,6 +90,12 @@ impl i32x8 {
     pub unsafe fn store_ptr(self, a: *mut i32) { _mm256_storeu_si256(a as *mut __m256i, self.v) }
 
     #[inline]
+    pub fn min(self, other: Self) -> Self { unsafe { _mm256_min_epi32(self.v, other.v) }.into() }
+
+    #[inline]
+    pub fn max(self, other: Self) -> Self { unsafe { _mm256_max_epi32(self.v, other.v) }.into() }
+
+    #[inline]
     pub fn extract<const INDEX: i32>(self) -> i32 { unsafe { _mm256_extract_epi32(self.v, INDEX) } }
 }
 

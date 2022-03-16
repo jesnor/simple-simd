@@ -88,6 +88,12 @@ impl i16x16 {
     pub unsafe fn store_ptr(self, a: *mut i16) { _mm256_storeu_si256(a as *mut __m256i, self.v) }
 
     #[inline]
+    pub fn min(self, other: Self) -> Self { unsafe { _mm256_min_epi16(self.v, other.v) }.into() }
+
+    #[inline]
+    pub fn max(self, other: Self) -> Self { unsafe { _mm256_max_epi16(self.v, other.v) }.into() }
+
+    #[inline]
     pub fn extract<const INDEX: i32>(self) -> i16 { unsafe { _mm256_extract_epi16(self.v, INDEX) as i16 } }
 }
 

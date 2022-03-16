@@ -80,6 +80,12 @@ impl f64x4 {
     pub fn hadd(self, other: Self) -> Self { unsafe { _mm256_hadd_pd(self.v, other.v) }.into() }
 
     #[inline]
+    pub fn min(self, other: Self) -> Self { unsafe { _mm256_min_pd(self.v, other.v) }.into() }
+
+    #[inline]
+    pub fn max(self, other: Self) -> Self { unsafe { _mm256_max_pd(self.v, other.v) }.into() }
+
+    #[inline]
     pub fn extract<const INDEX: i32>(self) -> f64 { f64::from_bits(self.to_raw_i64().extract::<INDEX>() as u64) }
 }
 

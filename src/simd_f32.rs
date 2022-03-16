@@ -105,6 +105,12 @@ impl f32x8 {
     pub fn mul_add(self, mul: Self, add: Self) -> Self { unsafe { _mm256_fmadd_ps(self.v, mul.v, add.v) }.into() }
 
     #[inline]
+    pub fn min(self, other: Self) -> Self { unsafe { _mm256_min_ps(self.v, other.v) }.into() }
+
+    #[inline]
+    pub fn max(self, other: Self) -> Self { unsafe { _mm256_max_ps(self.v, other.v) }.into() }
+
+    #[inline]
     pub fn sum(self) -> f32 {
         unsafe {
             let hi = _mm256_extractf128_ps::<1>(self.v); // (4, 5, 6, 7)
